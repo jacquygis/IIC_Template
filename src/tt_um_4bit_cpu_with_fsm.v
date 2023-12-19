@@ -12,7 +12,7 @@ always @(posedge clk or posedge rst) begin
 	if (rst) begin
 		//Reset: all output bits on 0
 		fourBitOutput <= 4'b0000;
-	end elde begin
+	end else begin
 		//MSB put in 4-Bit-Output
 		fourBitOutput <= eightBitInput[7:4];
 	end
