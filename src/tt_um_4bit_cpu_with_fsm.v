@@ -34,7 +34,7 @@ module tt_um_4bit_cpu_with_fsm (
     input  wire [7:0] in_addr_eightBit,  // storage addresses
     input  wire [7:0] in_opcode_eightBit, //opcode for chosing operations
     output reg [7:0] out_data_eightBit, // output data
-    input  wire       write_ena,// high when writing for storage is active
+    input  wire       ena,// high when writing for storage is active
     input  wire       clk,      // clock
     input  wire       rst_n     // reset_n - low to reset
 );
@@ -114,7 +114,7 @@ module tt_um_4bit_cpu_with_fsm (
 			    memory[i] <= 4'b0000;
 		    end;
 	    end else begin
-		    write_enable_ff <= write_ena;
+		    write_enable_ff <= ena;
 		    fsm_state <= next_fsm_state;
 		    operand_a <= next_operand_a;
 		    operand_b <= next_operand_b;
@@ -124,6 +124,7 @@ module tt_um_4bit_cpu_with_fsm (
 			    memory[i] <= next_memory[i];
 		    end;
 		    out_data <= accumulator;
+		    out_data_eightBit <= {out_data, 4'b0000};
 	    end;
     end;
 
@@ -142,6 +143,7 @@ module tt_um_4bit_cpu_with_fsm (
 		    ADD_SUB:	next_fsm_state <= IDLE;
 		    LOGIC:	next_fsm_state <= IDLE;
 		    SHIFT:	next_fsm_state <= IDLE;
+		    default:	next_fsm_state <= IDLE;
 	    endcase;
     end;
 
@@ -178,6 +180,7 @@ module tt_um_4bit_cpu_with_fsm (
 		    SHIFT: next_accumulator <= 	(in_opcode == 4'b1001) ? operand_a << 1: //SHIFT LEFT
 						(in_opcode == 4'b1010) ? operand_a >> 1: //SHIFT LEFT
 						accumulator;
+		    default: next_accumulator <= accumulator;
 	    endcase;
     end;
     
