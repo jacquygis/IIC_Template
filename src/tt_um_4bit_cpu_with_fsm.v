@@ -46,7 +46,6 @@ module tt_um_4bit_cpu_with_fsm (
     wire [3:0] in_data = 	ui_in[7:4];  // input data
     wire [3:0] in_addr = 	ui_in[3:0];  // storage addresses
     wire [3:0] in_opcode = 	uio_in [7:4]; // opcode for chosing operations
-    reg  [7:0] out_data_eightBit = uo_out;    // output data
     wire       in_write_enable   = uio_in[0];  // high when writing for storage is active
 
     //declaration register for accumulator, memory, Flip_Flops for write-enabling and for FSM-state
@@ -185,8 +184,8 @@ module tt_um_4bit_cpu_with_fsm (
 	    endcase;
     end;
 
-    out_data <= accumulator;
-    out_data_eightBit <= {out_data, 4'b0000}
+    assign out_data = accumulator;
+    assign uo_out = {out_data, 4'b0000};
     
     // instantiate segment display
     //seg7 seg7(.counter(digit), .segments(led_out));
