@@ -30,20 +30,22 @@ endmodule*/
 
 
 module tt_um_4bit_cpu_with_fsm (
-    input  wire [7:0] in_data_eightBit,  // input data
-    input  wire [7:0] in_addr_eightBit,  // storage addresses
-    input  wire [7:0] in_opcode_eightBit, //opcode for chosing operations
-    output reg [7:0] out_data_eightBit, // output data
-    input  wire       ena,// high when writing for storage is active
+    input  wire [3:0] in_data,  // input data
+    input  wire [3:0] in_addr,  // storage addresses
+    input  wire [3:0] in_opcode,// opcode for chosing operations
+    output reg  [7:0] out_data_eightBit, // output data
+    input  wire       in_write_enable,// high when writing for storage is active
+    input  wire       ena,	// high when design is selected
     input  wire       clk,      // clock
-    input  wire       rst_n     // reset_n - low to reset
+    input  wire       rst_n,    // reset_n - low to reset
+    input  wire       uio_oe,	//high when design is activated
+    
+    input wire	      inputs_not_used,
+    output reg	      outputs_not_used
 );
 
     //signals for converting
     wire rst = ! rst_n;
-    wire [3:0] in_data = in_data_eightBit[7:4];
-    wire [3:0] in_addr = in_addr_eightBit[7:4];
-    wire [3:0] in_opcode = in_opcode_eightBit[7:4];
     reg [3:0] out_data;
 
     //declaration register for accumulator, memory, Flip_Flops for write-enabling and for FSM-state
