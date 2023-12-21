@@ -116,10 +116,6 @@ module tt_um_4bit_cpu_with_fsm (
 		    for (i=0 ; i<=15 ; i = i+1)
 		    begin
 			    memory[i] <= 4'b0000;
-			    if (i == 15) begin
-				    i = 0;
-			    end;
-
 		    end;
 	    end else begin
 		    write_enable_ff <= ena;
@@ -130,11 +126,9 @@ module tt_um_4bit_cpu_with_fsm (
 		    for (i=0; i<=15; i = i+1)
 		    begin
 			    memory[i] <= next_memory[i];
-			    if (i == 15) begin
-				    i = 0;
-			    end;
 		    end;
 	    end;
+	    i = 0;
     end;
 
     //FSM Logik
