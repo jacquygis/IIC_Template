@@ -32,17 +32,18 @@ endmodule*/
 module tt_um_4bit_cpu_with_fsm (
     input  wire [7:0] ui_in,  	// input data
     input  wire [7:0] uio_in,	// I/Os inputs
-    output wire  [7:0] uo_out, 	// output data
+    output wire [7:0] uo_out, 	// output data
     input  wire       ena,	// high when design is selected
     input  wire       clk,      // clock
     input  wire       rst_n,    // reset_n - low to reset
     input  wire [7:0] uio_oe,	// enable path 0=input
-    output reg	[7:0] uio_out   // I/Os outputs - not used
+    output wire	[7:0] uio_out   // I/Os outputs - not used
 );
 
     //signals for converting
     wire rst = ! rst_n;
-    wire  [3:0] out_data;
+    wire [3:0] out_data;
+    wire [7:0] oio_out_unused;
     wire [3:0] in_data = 	ui_in[7:4];  // input data
     wire [3:0] in_addr = 	ui_in[3:0];  // storage addresses
     wire [3:0] in_opcode = 	uio_in [7:4]; // opcode for chosing operations
@@ -111,7 +112,7 @@ module tt_um_4bit_cpu_with_fsm (
 		    accumulator <= 4'b0000;
 		    write_enable_ff <= 1'b0;
 		    fsm_state <= IDLE;
-		    for (integer i=0 ; i<15 ; i = i+1)
+		    for (integer i=0 ; i<=15 ; i = i+1)
 		    begin
 			    memory[i] <= 4'b0000;
 		    end;
@@ -186,7 +187,7 @@ module tt_um_4bit_cpu_with_fsm (
 
     assign out_data = accumulator;
     assign uo_out = {out_data, 4'b0000};
-    
+    assign uio_out = {out_data, 4'b0000};    
     // instantiate segment display
     //seg7 seg7(.counter(digit), .segments(led_out));
 
