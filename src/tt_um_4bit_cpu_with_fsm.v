@@ -59,6 +59,7 @@ module tt_um_4bit_cpu_with_fsm (
     reg [3:0] next_operand_a;
     reg [3:0] operand_b;	//operand B for ALU
     reg [3:0] next_operand_b;
+    integer i = 0; 		//for for-loops
     
     reg [2:0]fsm_state, next_fsm_state;
     localparam IDLE	= 3'b000;
@@ -112,9 +113,13 @@ module tt_um_4bit_cpu_with_fsm (
 		    accumulator <= 4'b0000;
 		    write_enable_ff <= 1'b0;
 		    fsm_state <= IDLE;
-		    for (integer i=0 ; i<=15 ; i = i+1)
+		    for (i=0 ; i<=15 ; i = i+1)
 		    begin
 			    memory[i] <= 4'b0000;
+			    if (i == 15) begin
+				    i = 0;
+			    end;
+
 		    end;
 	    end else begin
 		    write_enable_ff <= ena;
@@ -122,9 +127,12 @@ module tt_um_4bit_cpu_with_fsm (
 		    operand_a <= next_operand_a;
 		    operand_b <= next_operand_b;
 		    accumulator <= next_accumulator;
-		    for (integer i=0; i<15; i = i+1)
+		    for (i=0; i<=15; i = i+1)
 		    begin
 			    memory[i] <= next_memory[i];
+			    if (i == 15) begin
+				    i = 0;
+			    end;
 		    end;
 	    end;
     end;
