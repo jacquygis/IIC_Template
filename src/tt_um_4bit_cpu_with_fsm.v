@@ -126,8 +126,6 @@ module tt_um_4bit_cpu_with_fsm (
 		    begin
 			    memory[i] <= next_memory[i];
 		    end;
-		    out_data <= accumulator;
-		    out_data_eightBit <= {out_data, 4'b0000};
 	    end;
     end;
 
@@ -186,6 +184,9 @@ module tt_um_4bit_cpu_with_fsm (
 		    default: next_accumulator <= accumulator;
 	    endcase;
     end;
+
+    out_data <= accumulator;
+    out_data_eightBit <= {out_data, 4'b0000}
     
     // instantiate segment display
     //seg7 seg7(.counter(digit), .segments(led_out));
