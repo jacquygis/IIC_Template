@@ -32,7 +32,7 @@ endmodule*/
 module tt_um_4bit_cpu_with_fsm (
     input  wire [7:0] ui_in,  	// input data
     input  wire [7:0] uio_in,	// I/Os inputs
-    output reg  [7:0] uo_out, 	// output data
+    output wire  [7:0] uo_out, 	// output data
     input  wire       ena,	// high when design is selected
     input  wire       clk,      // clock
     input  wire       rst_n,    // reset_n - low to reset
@@ -42,7 +42,7 @@ module tt_um_4bit_cpu_with_fsm (
 
     //signals for converting
     wire rst = ! rst_n;
-    reg  [3:0] out_data;
+    wire  [3:0] out_data;
     wire [3:0] in_data = 	ui_in[7:4];  // input data
     wire [3:0] in_addr = 	ui_in[3:0];  // storage addresses
     wire [3:0] in_opcode = 	uio_in [7:4]; // opcode for chosing operations
