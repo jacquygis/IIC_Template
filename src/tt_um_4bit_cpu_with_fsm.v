@@ -1,34 +1,5 @@
 `default_nettype none
 
-//converting the 8-Bit-Input to a 4-bit-input-signal via MSB
-/*module EightToFourBitConverter( 
-	input [7:0] eightBitInput,
-	output [3:0] fourBitOutput,
-	input clk,
-	input rst
-);
-
-always @(posedge clk or posedge rst) begin
-	//MSB put in 4-Bit-Output
-	fourBitOutput <= eightBitInput[7:4];
-end
-endmodule
-
-//converting the 4-bit-output-signal to a 8-bit-output 
-module FourToEightBitConverter(
-	input reg [3:0] fourBitInput,
-	output reg [7:0] eightBitOutput,
-	input clk,
-	input rst
-);
-
-always @(posedge clk or posedge rst) begin
-	//4-bit-input put on MSB of 8-bit-output
-	eightBitOutput <= {fourBitInput, 4'b0000};
-end
-endmodule*/
-
-
 module tt_um_4bit_cpu_with_fsm (
     input  wire [7:0] ui_in,  	// input data
     input  wire [7:0] uio_in,	// I/Os inputs
@@ -68,44 +39,6 @@ module tt_um_4bit_cpu_with_fsm (
     localparam ADD_SUB	= 3'b011;
     localparam LOGIC	= 3'b100;
     localparam SHIFT	= 3'b101;
-
-    //definition of 'CPUState' for FSM-states, each state is represented by a 3-bit-code
-    /*typedef enum logic [2:0] {
-	    IDLE,	//state for command execution
-	    LOAD,	//state for LOAD operation
-	    STORE,	//state for STORE operation
-	    ADD_SUB,	//state for ADD or SUB operation
-	    LOGIC,	//state for logic operations (AND, OR, XOR, NOT)
-	    SHIFT	//state for shift operations (shift left, shift right)
-	  } fsm_state, next_fsm_state;*/
-
-    /*EightToFourBitConverter mod_inst1(
-	    .eightBitInput(in_data_eightBit),
-	    .fourBitOutput(in_data),
-	    .clk(clk),
-	    .rst(rst)
-    );
-
-    EightToFourBitConverter mod_inst2(
-	    .eightBitInput(in_addr_eightBit),
-	    .fourBitOutput(in_addr),
-	    .clk(clk),
-	    .rst(rst)
-    );
-
-    EightToFourBitConverter mod_inst3(
-	    .eightBitInput(in_opcode_eightBit),
-	    .fourBitOutput(in_opcode),
-	    .clk(clk),
-	    .rst(rst)
-    );
-
-    FourToEightBitConverter mod_inst4(
-	    .fourBitInput(out_data),
-	    .eightBitOutput(out_data_eightBit),
-	    .clk(clk),
-	    .rst(rst)
-    );*/
 
     //Regproc
     always @(posedge clk or posedge rst) begin
@@ -189,8 +122,6 @@ module tt_um_4bit_cpu_with_fsm (
 
     assign out_data = accumulator;
     assign uo_out = {out_data, 4'b0000};
-    assign uio_out = {out_data, 4'b0000};    
-    // instantiate segment display
-    //seg7 seg7(.counter(digit), .segments(led_out));
+    assign uio_out = {out_data, 4'b0000};
 
 endmodule
