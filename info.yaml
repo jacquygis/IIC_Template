@@ -33,7 +33,8 @@ documentation:
       Can store and load binary values, can do small mathematical and logic operations
 # Instructions on how someone could test your project, include things like what buttons do what and how to set the clock if needed
   how_to_test:  |
-# A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
+    bla bla
+    # A description of what the inputs do (e.g. red button, SPI CLK, SPI MOSI, etc).
   inputs:               
     - compare bit 11
     - compare bit 12
