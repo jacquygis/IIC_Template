@@ -1,0 +1,15 @@
+bitconverter versuchen direkt in hauptmodul einzubauen
+
+ca so:
+in_data_4bit <= in_data_8bit[7:4]
+
+iic-v2svg.sh -> zum visualisieren der gatterschaltung
+
+alles auf 4 bit
+shift funktionen entfernen
+opcode auf i/os setzen
+ena muss immer auf 1 sein
+write-enable auch auf i/o setzen wenn noch platz
+darauf achten, dass op_codes in state machine mit denen in den operationen übereinstimmen
+
+time-scale wieder aus hauptcode löschen!!!!!!!!!!!!!!!!!!! nach tests

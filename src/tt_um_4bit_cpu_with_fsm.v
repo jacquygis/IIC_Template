@@ -1,4 +1,6 @@
 `default_nettype none
+`timescale 1ns/1ps
+
 
 module tt_um_4bit_cpu_with_fsm (
     input  wire [7:0] ui_in,  	// input data
@@ -51,7 +53,7 @@ module tt_um_4bit_cpu_with_fsm (
 			    memory[i] <= 4'b0000;
 		    end;
 	    end else begin
-		    write_enable_ff <= ena;
+		    write_enable_ff <= in_write_enable;
 		    fsm_state <= next_fsm_state;
 		    operand_a <= next_operand_a;
 		    operand_b <= next_operand_b;
@@ -86,14 +88,14 @@ module tt_um_4bit_cpu_with_fsm (
     //chose operand with MUX
     always @(posedge clk) begin
 	    case(in_opcode)
-		    4'b0001, 4'b0101, 4'b0110, 4'b0111, 4'b1000, 4'b1001, 4'b1010: 
+		    4'b0000, 4'b0001, 4'b0101, 4'b0110, 4'b0111, 4'b1001, 4'b1010: 
 		    begin
 			    next_operand_a <= accumulator;
 		    	    next_operand_b <= in_data;
 		    end
 		    default: 
 		    begin
-			    next_operand_a <= accumulator;
+			    next_operand_a <= in_data;
 		    	    next_operand_b <= 4'b0000;
 		    end
 	    endcase;
@@ -121,7 +123,7 @@ module tt_um_4bit_cpu_with_fsm (
     end;
 
     assign out_data = accumulator;
-    assign uo_out = {out_data, 4'b0000};
-    assign uio_out = {out_data, 4'b0000};
+    assign uo_out = {4'b0000, out_data};
+    assign uio_out = 8'b00000000;
 
 endmodule

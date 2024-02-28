@@ -1,48 +1,132 @@
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, FallingEdge, Timer, ClockCycles
+from cocotb.binary import BinaryValue
 
-
-segments = [ 63, 6, 91, 79, 102, 109, 125, 7, 127, 111 ]
 
 @cocotb.test()
-async def test_7seg(dut):
+async def test_4bit_cpu(dut):
     dut._log.info("start")
     clock = Clock(dut.clk, 10, units="us")
     cocotb.start_soon(clock.start())
 
     # reset
     dut._log.info("reset")
+    dut.ena.value = 1
     dut.rst_n.value = 0
-    # set the compare value
-    dut.ui_in.value = 1
+    dut.ui_in.value = BinaryValue('00000000')
+    dut.uio_in.value = BinaryValue('00000000')
+    dut.uio_oe.value = BinaryValue('00000000')
     await ClockCycles(dut.clk, 10)
     dut.rst_n.value = 1
 
-    # the compare value is shifted 10 bits inside the design to allow slower counting
-    max_count = dut.ui_in.value << 10
-    dut._log.info(f"check all segments with MAX_COUNT set to {max_count}")
-    # check all segments and roll over
-    for i in range(15):
-        dut._log.info("check segment {}".format(i))
-        await ClockCycles(dut.clk, max_count)
-        #assert int(dut.segments.value) == segments[i % 10]
-
-        # all bidirectionals are set to output
-       # assert dut.uio_oe == 0xFF
-
-    # reset
-    dut.rst_n.value = 0
-    # set a different compare value
-    dut.ui_in.value = 3
-    await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
-
-    max_count = dut.ui_in.value << 10
-    dut._log.info(f"check all segments with MAX_COUNT set to {max_count}")
-    # check all segments and roll over
-    for i in range(15):
-        dut._log.info("check segment {}".format(i))
-        await ClockCycles(dut.clk, max_count)
-        #assert int(dut.segments.value) == segments[i % 10]
-
+    #Testfall 1: Einen Wert in Speicher schreiben
+    dut._log.info("Testfall 1: Einen Wert in Speicher schreiben 0101")
+    dut._log.info("Erwartetes Ergebnis: Akkumulatorwert sollte 00000101 sein.")
+    
+    #Schreibe Wert in Speicher (Adresse 3)
+    dut.ui_in.value = BinaryValue('01010011') #Adresse 3, Wert 0101
+    dut.uio_in.value = BinaryValue('00100001') #Opcode WRITE
+    
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    
+    #Überprüfe Speicherinhalt Adresse 3
+    dut.ui_in.value = BinaryValue('00000011') #Adresse 3 lesen
+    dut.uio_in.value = BinaryValue('00110000') #Opcpde LOAD
+    
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    
+    if (dut.ou_out.value != 00000101):
+        dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 fehlgeschlagen!".format(dut-ou_out.value))
+    else:
+        dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 erfolgreich!".format(dut-ou_out.value))
+    
+    #Testfall 2: Addition von zwei Werten
+    dut._log.info("Testfall 2: Gespeicherten Wert von Testfall 1 mit zweiten Wert addieren")
+    dut._log.info("Erwartetes Ergebnis: Akkumulatorwert sollte 0101 + 0011 = 1000")
+    dut.ui_in.value = BinaryValue('00000011') #Wert aus Adresse 3 in Akkumulator laden
+    dut.uio_in.value = BinaryValue('00110000') #Opcode LOAD
+    
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    
+    dut.ui_in.value = BinaryValue('00110000')
+    dut.uio_in.value = BinaryValue('00000000')
+    
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    
+    if (dut.ou_out.value != 00001000):
+        dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 fehlgeschlagen!".format(dut-ou_out.value))
+    else:
+        dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 erfolgreich!".format(dut-ou_out.value))
+    
+    #Testfall 3: NOT Funktion
+    dut._log.info("Testfall 2: Gespeicherten Wert von Testfall 1 negieren")
+    dut._log.info("Erwartetes Ergebnis: Akkumulatorwert sollte 1010 sein")
+    dut.ui_in.value = BinaryValue('00000011') #Wert aus Adresse 3 in Akkumulator laden
+    dut.uio_in.value = BinaryValue('00110000') #Opcode LOAD
+    
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    
+    dut.ui_in.value = BinaryValue('00110000')
+    dut.uio_in.value = BinaryValue('10000000')
+    
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    await RisingEdge(dut.clk)
+    
+    if (dut.ou_out.value != 00001010):
+        dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 fehlgeschlagen!".format(dut-ou_out.value))
+    else:
+        dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 erfolgreich!".format(dut-ou_out.value))
