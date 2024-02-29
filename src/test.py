@@ -54,7 +54,7 @@ async def test_4bit_cpu(dut):
     await RisingEdge(dut.clk)
     await RisingEdge(dut.clk)
     
-    if (dut.ou_out.value != 00000101):
+    if (dut.ou_out.value != BinaryValue(00000101)):
         dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 fehlgeschlagen!".format(dut-ou_out.value))
     else:
         dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 erfolgreich!".format(dut-ou_out.value))
@@ -90,7 +90,7 @@ async def test_4bit_cpu(dut):
     await RisingEdge(dut.clk)
     await RisingEdge(dut.clk)
     
-    if (dut.ou_out.value != 00001000):
+    if (dut.ou_out.value != BinaryValue(00001000)):
         dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 fehlgeschlagen!".format(dut-ou_out.value))
     else:
         dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 erfolgreich!".format(dut-ou_out.value))
@@ -126,7 +126,7 @@ async def test_4bit_cpu(dut):
     await RisingEdge(dut.clk)
     await RisingEdge(dut.clk)
     
-    if (dut.ou_out.value != 00001010):
+    if (dut.ou_out.value != BinaryValue(00001010)):
         dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 fehlgeschlagen!".format(dut-ou_out.value))
     else:
         dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 erfolgreich!".format(dut-ou_out.value))
