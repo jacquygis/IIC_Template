@@ -131,3 +131,4 @@ async def test_4bit_cpu(dut):
         dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 fehlgeschlagen!".format(dut-ou_out.value))
     else:
         dut._log.info("Tatsächliches Ergebnis: {} Testfall 1 erfolgreich!".format(dut-ou_out.value))
+"""
