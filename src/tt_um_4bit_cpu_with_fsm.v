@@ -1,3 +1,17 @@
+// Copyright 2024 Jacqueline Gislai
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE−2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 `default_nettype none
 `timescale 1ns/1ps
 
@@ -16,13 +30,13 @@ module tt_um_4bit_cpu_with_fsm (
     //signals for converting
     wire rst = ! rst_n;
     wire [3:0] out_data;
-    wire [7:0] oio_out_unused;
+    wire [7:0] uio_out_unused;
     wire [3:0] in_data = 	ui_in[7:4];  // input data
     wire [3:0] in_addr = 	ui_in[3:0];  // storage addresses
     wire [3:0] in_opcode = 	uio_in [7:4]; // opcode for chosing operations
     wire       in_write_enable   = uio_in[0];  // high when writing for storage is active
 
-    //declaration register for accumulator, memory, Flip_Flops for write-enabling and for FSM-state
+    //registerdeclaration accumulator,memory, Flip_Flops write-enabling,FSM-state
     reg [3:0] accumulator;	//accumulator
     reg [3:0] next_accumulator;
     reg [3:0] memory [0:15];	//Storage -array of registers
@@ -42,6 +56,7 @@ module tt_um_4bit_cpu_with_fsm (
     localparam LOGIC	= 3'b100;
     localparam SHIFT	= 3'b101;
 
+    
     //Regproc
     always @(posedge clk or posedge rst) begin
 	    if (rst) begin
@@ -66,6 +81,7 @@ module tt_um_4bit_cpu_with_fsm (
 	    i = 0;
     end;
 
+
     //FSM Logik
     always @(posedge clk) begin
 	    case(fsm_state)
@@ -85,10 +101,11 @@ module tt_um_4bit_cpu_with_fsm (
 	    endcase;
     end;
 
+
     //chose operand with MUX
     always @(posedge clk) begin
 	    case(in_opcode)
-		    4'b0000, 4'b0001, 4'b0101, 4'b0110, 4'b0111, 4'b1001, 4'b1010: 
+		    4'b0000, 4'b0001, 4'b0101, 4'b0110, 4'b0111: 
 		    begin
 			    next_operand_a <= accumulator;
 		    	    next_operand_b <= in_data;
@@ -100,6 +117,7 @@ module tt_um_4bit_cpu_with_fsm (
 		    end
 	    endcase;
     end;
+
 
     //Accumulator-Logic Operations depending on FSM-state
     always @(posedge clk) begin
@@ -121,6 +139,7 @@ module tt_um_4bit_cpu_with_fsm (
 		    default: next_accumulator <= accumulator;
 	    endcase;
     end;
+
 
     assign out_data = accumulator;
     assign uo_out = {4'b0000, out_data};
